@@ -1,4 +1,4 @@
-FROM node:21-bookworm
+FROM node:22-bookworm
 
 ARG SITE_URL=https://phanes.net
 
