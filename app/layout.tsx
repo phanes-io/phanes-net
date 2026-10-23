@@ -1,3 +1,4 @@
+import Script from "next/script";
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -28,7 +29,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>{children}<Script
+          src="https://rybbit.scpx.de/api/script.js"
+          data-site-id="11"
+          data-skip-patterns={"[\"/api/**\", \"/auth/**\", \"/callback/**\", \"/verify/**\", \"/reset-password/**\"]"}
+          data-mask-patterns={"[\"/domains/*/**\", \"/customers/*/**\", \"/tickets/*/**\", \"/servers/*/**\", \"/users/*/**\"]"}
+          strategy="afterInteractive"
+        />
+      </body>
     </html>
   );
 }

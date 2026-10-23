@@ -89,8 +89,7 @@ export default function Datenschutz() {
             Data Collection
           </h2>
           <p>
-            This website does not collect any personal data. No cookies are set,
-            no tracking is performed, and no analytics data is gathered.
+            We use our self-hosted Rybbit instance at rybbit.scpx.de to measure page views and website usage. It receives the page path without query parameters, time, referring site, browser, device and approximate country. The IP address is processed for delivery and a daily rotating pseudonymous visitor identifier, but is not stored as an IP address in analytics. No analytics cookies are set. Form inputs and session recordings are not collected. Analytics is used to improve this website, without combining it with advertising profiles. For access, deletion or objection, use the contact details in this notice.
           </p>
         </section>
 
