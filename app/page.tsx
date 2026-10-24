@@ -22,9 +22,9 @@ export default async function Home() {
             <section className="content-column">
 
               {/* Tagline — the thing this site is about */}
-              <p className="tagline">
+              <h1 className="tagline">
                 Building tools for a more private, open web.
-              </p>
+              </h1>
 
               {/* Projects — main focus */}
               <div className="projects-block">
