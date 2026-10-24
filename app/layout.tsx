@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://phanes.net"),
   title: "phanes.net — Jannik Schröder",
   description:
     "Personal project showcase by Jannik Schröder. Building tools for a more private, open web.",

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
+  alternates: {canonical:"https://phanes.net/privacy"},
   title: "Privacy Policy — phanes.net",
   robots: { index: false },
 };

@@ -1,0 +1,43 @@
+---
+title: "sequencessh: Read-Only Checks Still Need Host Verification"
+date: "2026-12-03"
+description: "A review of the small SSH wrapper and the checks that must come before using it against important hosts."
+---
+
+A fleet command does not become harmless just because the intended command is `uname`. The connection still needs to reach the intended machines, and the output still needs to be associated with the right host.
+
+sequencessh is a small wrapper around named lists of SSH targets. Its simplicity makes the source worth reading before it becomes part of an operational routine. This is a review of the published script, not evidence of a production rollout or a fleet benchmark.
+
+## Start with the target list
+
+The documented interface is a list name followed by the command to execute. The list resolves to configured SSH targets. Before sending anything, check the exact members of that list and the user account used for each target.
+
+A stale list can turn an ordinary observation into an unintended connection. Keep a small lab list separate from production. A command that reads local state can still produce output containing usernames, mount paths or other information you should not publish.
+
+The first useful result is therefore an inventory you understand, not a screen full of output from unfamiliar hosts.
+
+## The published default has a material limitation
+
+The repository documents that its SSH invocation uses `StrictHostKeyChecking=no`. That deserves attention even when the remote command is intended to be read-only. Disabling the normal host-key confirmation is not the same as verifying a host through a trusted channel.
+
+I would not describe this default as a production-safe host-verification policy. Before relying on the wrapper for important systems, its invocation and error handling need to be brought in line with the intended environment and tested. This post does not claim that the upstream default has already been fixed.
+
+For an individually managed test target, ordinary OpenSSH can make the intended policy explicit:
+
+```bash
+ssh -o StrictHostKeyChecking=yes demo@server.example.com uname -r
+```
+
+The hostname is a documentation placeholder. A trusted key must already have been established by the administrator; accepting an unexpected key merely to finish a test defeats the purpose.
+
+## A result needs a host and a failure state
+
+Choose a harmless observation, record the target and keep failures visible. Do not silently treat an unreachable machine as an empty successful response. Check whether a non-zero command result is preserved before using the wrapper in a larger script.
+
+Parallel-looking output can also be misleading if it is difficult to associate a line with its source. Presentation is part of the diagnostic interface.
+
+## Keep observation separate from deployment
+
+A successful read-only pass does not authorize a later restart or package upgrade. Those need their own change scope, rollback and current evidence. Small tools are most useful when their boundaries are clear, including the limitations that remain in the published source.
+
+Sources: [sequencessh repository and its documented caveat](https://github.com/Jannik-Schroeder/sequencessh), [OpenSSH client options](https://man.openbsd.org/ssh_config).

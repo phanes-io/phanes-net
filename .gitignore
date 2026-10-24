@@ -2,3 +2,7 @@ node_modules/
 .next/
 .env*.local
 .claude/
+
+*.tsbuildinfo
+.env
+.env.*

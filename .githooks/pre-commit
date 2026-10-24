@@ -1,0 +1,3 @@
+#!/bin/sh
+set -eu
+gitleaks git --staged --redact --no-banner

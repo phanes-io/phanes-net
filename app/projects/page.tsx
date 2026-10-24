@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 export const revalidate = 21600;
 
 export const metadata: Metadata = {
+  alternates: {canonical:"https://phanes.net/projects"},
   title: "Projects — phanes.net",
   description: "All projects by Jannik Schröder.",
 };
@@ -46,8 +47,8 @@ export default async function ProjectsPage() {
                           )}
                           <a
                             href={link.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            target={link.href.startsWith("/") ? undefined : "_blank"}
+                            rel={link.href.startsWith("/") ? undefined : "noopener noreferrer"}
                             className="proj-link"
                           >
                             {link.label}

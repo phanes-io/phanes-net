@@ -1,0 +1,16 @@
+import test,{after} from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {isPublished,safePostSlug} from './publication.generated.mjs';
+const cwd=process.cwd();const dir=await fs.mkdtemp(path.join(os.tmpdir(),'phanes-publication-'));await fs.mkdir(path.join(dir,'content/blog'),{recursive:true});
+await fs.writeFile(path.join(dir,'content/blog/published.mdx'),'---\ntitle: "Visible post"\ndate: "2026-01-01"\ndescription: "Visible description"\n---\nPublic body');
+await fs.writeFile(path.join(dir,'content/blog/future.mdx'),'---\ntitle: "Hidden future post"\ndate: "2026-11-05"\n---\nHidden future body');
+await fs.writeFile(path.join(dir,'content/blog/bad.mdx'),'---\ntitle: "Bad date"\ndate: "2026-02-30"\n---\nNever publish');
+process.chdir(dir);const blog=await import('./blog.generated.mjs');after(async()=>{process.chdir(cwd);await fs.rm(dir,{recursive:true,force:true});});
+test('Berlin calendar, not server UTC, gates the date',()=>{assert.equal(isPublished('2026-10-25',new Date('2026-10-24T21:59:59Z')),false);assert.equal(isPublished('2026-10-25',new Date('2026-10-24T22:00:00Z')),true);assert.equal(isPublished('2026-10-26',new Date('2026-10-25T22:59:59Z')),false);assert.equal(isPublished('2026-10-26',new Date('2026-10-25T23:00:00Z')),true);});
+test('invalid dates and unsafe slugs fail closed',()=>{for(const date of ['bad','2026-02-30','2026-2-01'])assert.equal(isPublished(date),false);for(const slug of ['../secret','foo/bar','%2e%2e','/private',''])assert.equal(safePostSlug(slug),false);assert.equal(safePostSlug('why-i-built-commitgen'),true);});
+test('actual file loader hides future and invalid metadata',async()=>{const posts=await blog.getAllPosts(new Date('2026-10-24T12:00:00Z'));assert.deepEqual(posts.map(p=>p.slug),['published']);});
+test('future direct file lookup never returns its content',async()=>{await assert.rejects(blog.getPost('future',new Date('2026-10-24T12:00:00Z')));await assert.rejects(blog.getPost('../secret'));});
+test('same file becomes available at the planned Berlin day',async()=>{const post=await blog.getPost('future',new Date('2026-11-04T23:00:00Z'));assert.equal(post.content.trim(),'Hidden future body');assert.equal((await blog.getAllPosts(new Date('2026-11-04T23:00:00Z'))).length,2);});

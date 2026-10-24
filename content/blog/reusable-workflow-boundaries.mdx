@@ -1,0 +1,39 @@
+---
+title: "Reusable Workflows: What Is Shared, What Must Stay Project-Specific"
+date: "2026-12-17"
+description: "Define a small CI contract around checks and artifacts while keeping deployment authority and project assumptions explicit."
+---
+
+A shared workflow reduces maintenance only if callers understand what it promises. Moving an entire pipeline into another repository can hide assumptions about environments, credentials and deployment rather than remove duplication.
+
+The useful design question is which checks mean the same thing across projects. A dependency audit or a source scan can have a clear shared contract. A production rollout often has additional rules that belong to the individual application.
+
+## Share a check with a defined result
+
+Describe the input and success condition of each shared job. Does it inspect the committed source, build an artifact or deploy one? Which package manager and lockfile does it consume? Does a reported success include tests, or just compilation?
+
+These questions matter when two repositories use similar-looking job names. A caller should not need to read an unrelated production secret to determine whether a build succeeded.
+
+For GitHub Actions, reusable workflows expose a documented call interface with inputs and secrets. That interface is a starting point for a contract; it does not prove that every supplied value has the intended meaning.
+
+## Keep authority narrower than convenience
+
+A workflow that scans source does not need the same credentials as one that changes a running application. Separate these jobs so that a routine check cannot accidentally inherit deployment authority.
+
+Pass the specific credentials that a job needs and keep them out of command-line URLs and diagnostic output. Redaction is not a reason to deliberately print a transformed token. Review error paths as well as the successful run.
+
+This is an architectural rule, not a claim that a particular private repository or every existing workflow has already been audited.
+
+## A reference is part of the dependency
+
+A shared workflow can change independently of the caller. Decide how consumers receive updates and how a failed change is rolled back. A moving branch is convenient; an immutable revision makes a specific execution easier to explain later.
+
+Record which source and shared revision produced an artifact. A successful earlier run of a similarly named job is not evidence that today's artifact used the same implementation.
+
+## Let deployment retain project knowledge
+
+A stateful service may require a verified backup, a compatible schema and a constrained restart. A content website may need a publication-date test instead. Both can reuse source checks while keeping those distinct acceptance conditions visible.
+
+Before extracting another abstraction, write down one caller's input, result and failure behavior. If that cannot be stated plainly, sharing the implementation is likely to spread confusion. The goal is a smaller, reviewable interface that makes the real differences easier to see.
+
+Sources: [GitHub reusable-workflow documentation](https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows), [secure use of Actions](https://docs.github.com/en/actions/reference/security/secure-use).

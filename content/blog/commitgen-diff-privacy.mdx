@@ -1,0 +1,43 @@
+---
+title: "commitgen.nvim: What Leaves Your Machine When You Generate a Commit"
+date: "2026-11-05"
+description: "A source-level look at the staged diff, status, remote request and later commit review in commitgen.nvim."
+---
+
+A commit-message assistant sits at an easy-to-miss boundary. The resulting message is short, but the material used to generate it can contain application code, configuration and filenames. Reviewing the message afterwards is useful; it does not undo a request that has already sent the diff elsewhere.
+
+This note describes the implementation reviewed on 24 October 2026 at revision `5b077d4`. It is a description of that source, not a claim about every later version or a provider's retention policy.
+
+## The input is larger than the eventual message
+
+The plugin collects the staged diff and a diff summary. It also includes Git's short status output. Those become part of a prompt sent to the configured model through the remote API used by this revision. A local editor window does not make the generation local.
+
+The practical distinction is between the staged content and information reported by status. With automatic staging disabled, an unstaged file's full contents are not automatically part of the staged diff. Its filename can still appear in status. A secret committed in a staged configuration change, however, is ordinary diff text as far as the request is concerned.
+
+Before invoking generation, inspect both views yourself:
+
+```bash
+git diff --cached --stat
+git diff --cached
+git status --short
+```
+
+These are local inspection commands. They do not ask the model to decide whether a secret is safe to transmit.
+
+## Review and cancellation happen later
+
+The generated message opens in an editable buffer. Confirmation performs the commit, while cancellation abandons that commit step. That boundary is valuable: a plausible message can still misdescribe a change, omit a migration or imply a test that never ran.
+
+Cancellation at this stage must not be described as preventing the earlier API request. For sensitive work, the decision whether to send source belongs before generation. If the repository cannot be sent to the configured provider, write the message locally or use a separately verified local workflow.
+
+## A useful demonstration avoids real repository data
+
+A small disposable repository with a harmless change is enough to inspect the workflow. Keep credentials out of the diff, example configuration and screenshots. Use an environment-managed credential rather than committing it to editor configuration, and avoid treating an environment variable as proof that a process can never expose a credential.
+
+The reviewed implementation also creates a temporary request file. That is another local data-handling detail to assess on a shared machine. This post is not a security audit or a claim that all versions meet a particular privacy standard.
+
+## What this changes about the original introduction
+
+The [original project article](/blog/why-i-built-commitgen) explains why the editor interaction is convenient. This note supplies the boundary that convenience alone does not explain: inspect what is sent before generation, then inspect what is committed after generation. Both reviews have a purpose.
+
+Source: [commitgen.nvim at the reviewed revision](https://github.com/Jannik-Schroeder/commitgen.nvim/blob/5b077d4a7dd9ad112ef74ebbc38d73d335ecba54/lua/commitgen/init.lua).

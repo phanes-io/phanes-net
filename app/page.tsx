@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import AsciiArt from "@/components/AsciiArt";
 import ProjectCard from "@/components/ProjectCard";
 import ContactLinks from "@/components/ContactLinks";
@@ -5,6 +6,7 @@ import Link from "next/link";
 import { getSortedProjects } from "@/lib/github";
 
 export const revalidate = 21600;
+export const metadata: Metadata = { alternates: {canonical:'https://phanes.net/'} };
 
 export default async function Home() {
   const featured = (await getSortedProjects()).slice(0, 3);
@@ -34,6 +36,7 @@ export default async function Home() {
                 <Link href="/projects" className="see-more">
                   → all projects
                 </Link>
+                <Link href="/blog" className="see-more">→ engineering notes</Link>
               </div>
 
               <div className="divider" />

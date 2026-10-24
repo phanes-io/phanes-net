@@ -46,7 +46,7 @@ export const projects: Project[] = [
     subtitle: "personal site",
     description: "Personal site and digital identity hub.",
     details:
-      "jsde.me is my primary digital identity — a lightweight static site that serves as a single source of truth for who I am and what I work on. It links out to projects, social presence, and contact info without any tracking or third-party requests. Built with Next.js, deployed to the edge.",
+      "jsde.me is my personal Next.js site and engineering notebook. It brings together articles, projects, social links, and contact information. The site is self-hosted and uses our self-hosted Rybbit instance for cookieless page-view analytics; it is not a site without analytics requests. The privacy information linked from jsde.me explains the data collection.",
     githubRepo: "Jannik-Schroeder/jsde-me",
     links: [
       { label: "jsde.me", href: "https://jsde.me", dimPrefix: "→" },
@@ -133,6 +133,7 @@ export const projects: Project[] = [
       "commitgen.nvim reads your staged diff (git diff --cached) and sends it to OpenAI's chat completions API to generate a conventional commit message. The result appears in an editable floating window inside Neovim — press Enter to commit, Esc to cancel. The entire flow runs asynchronously via vim.fn.jobstart so Neovim never blocks. Supports model selection, language preference, auto-staging, and SSH commit signing with FIDO hardware keys. Built for lazy.nvim, written in pure Lua, MIT-licensed.",
     githubRepo: "Jannik-Schroeder/commitgen.nvim",
     links: [
+      { label: "Engineering note: why I built it", href: "/blog/why-i-built-commitgen" },
       {
         label: "Jannik-Schroeder/commitgen.nvim",
         href: "https://github.com/Jannik-Schroeder/commitgen.nvim",

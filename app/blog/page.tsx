@@ -1,19 +1,22 @@
+import { connection } from 'next/server';
 import Link from "next/link";
 import { getAllPosts } from "@/lib/blog";
 import BlogAsciiArt from "@/components/BlogAsciiArt";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: {canonical:"https://phanes.net/blog"},
   title: "Blog — phanes.net",
   description: "Notes on privacy, open infrastructure, and systems design.",
 };
 
 function formatDate(iso: string): string {
   const d = new Date(iso);
-  return d.toLocaleDateString("en-CA"); // YYYY-MM-DD
+  return d.toLocaleDateString("en-CA", {timeZone:"Europe/Berlin"}); // YYYY-MM-DD
 }
 
 export default async function BlogPage() {
+  await connection();
   const posts = await getAllPosts();
 
   return (

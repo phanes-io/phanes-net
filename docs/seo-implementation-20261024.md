@@ -1,0 +1,7 @@
+# Approved SEO implementation
+
+24 October: execute the existing MTX/Phanes/jsde plan. Public content only. Phanes gets per-page canonicals, an accurately described jsde analytics/deployment state, a direct blog/project discovery path, strict post slugs, and one Berlin-date publication policy shared by list/direct/metadata/sitemap. Invalid/future metadata fails closed. Runtime connection() prevents dates frozen at build time. Legal/privacy retain noindex. Existing dates preserved. Website/report tests must distinguish a correct live page from Google's older saved index state.
+
+jsde historical monitoring article explicitly labels retired LibreNMS and the later Checkmk migration, avoids a fabricated new SMS test and private example addresses. No monitoring, mail, SMS, auth, hardware, billing, DNS or database mutation. Test club stays excluded. New private future article sources do not become client chunks or premature public pages. Every new scheduled article needs primary/source evidence and no invented first-person result.
+
+Local blocking gitleaks hook and CI source/build/audit+secret checks are required. Native restore of source/build artifacts before promotion, immutable previous images retained. Source snapshots and private rollback evidence in /root/seo-umsetzung-20261024. No extra Telegram report dispatch. Phanes Docker context excludes env/git/build/test data; npm ci consumes the lockfile and build/runtime use the existing node account. Existing application env meanings preserved.

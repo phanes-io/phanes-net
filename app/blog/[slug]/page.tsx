@@ -1,5 +1,6 @@
+import { connection } from 'next/server';
 import Link from "next/link";
-import { getPost, getAllPosts } from "@/lib/blog";
+import { getPost } from "@/lib/blog";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { notFound } from "next/navigation";
 import BlogAsciiArt from "@/components/BlogAsciiArt";
@@ -9,26 +10,17 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateStaticParams() {
-  const posts = await getAllPosts();
-  return posts.map((p) => ({ slug: p.slug }));
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  try {
-    const post = await getPost(slug);
-    return {
-      title: `${post.title} — phanes.net`,
-    };
-  } catch {
-    return { title: "phanes.net" };
-  }
+  await connection();
+  let post;
+  try { post=await getPost((await params).slug); } catch { notFound(); }
+  const url='https://phanes.net/blog/'+post.slug;
+  return {title:`${post.title} — phanes.net`,description:post.description,alternates:{canonical:url},openGraph:{title:post.title,description:post.description,url,type:'article',publishedTime:post.date},robots:{index:true,follow:true}};
 }
 
 function formatDate(iso: string): string {
   const d = new Date(iso);
-  return d.toLocaleDateString("en-CA");
+  return d.toLocaleDateString("en-CA", {timeZone:"Europe/Berlin"});
 }
 
 const mdxComponents = {
@@ -71,6 +63,7 @@ const mdxComponents = {
 };
 
 export default async function PostPage({ params }: Props) {
+  await connection();
   const { slug } = await params;
 
   let post;
@@ -91,7 +84,7 @@ export default async function PostPage({ params }: Props) {
                 <Link href="/blog" className="post-back">← blog</Link>
               </nav>
               <header className="post-header">
-                <time className="post-date">{formatDate(post.date)}</time>
+                <time className="post-date" dateTime={post.date}>{formatDate(post.date)}</time>
                 <h1 className="post-title">{post.title}</h1>
               </header>
             </div>
@@ -104,6 +97,7 @@ export default async function PostPage({ params }: Props) {
           <div className="post-divider" />
 
           {/* Content */}
+          <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({'@context':'https://schema.org','@type':'BlogPosting',headline:post.title,description:post.description,datePublished:post.date,author:{'@type':'Person',name:'Jannik Schröder',url:'https://phanes.net/'},mainEntityOfPage:'https://phanes.net/blog/'+post.slug}).replace(/</g,'\u003c')}} />
           <article className="post-content">
             <MDXRemote source={post.content} components={mdxComponents} />
           </article>
@@ -151,6 +145,7 @@ export default async function PostPage({ params }: Props) {
           flex-direction: column;
           gap: 1.5rem;
           flex: 1;
+          min-width: 0;
         }
         .post-top-art {
           opacity: 0.5;

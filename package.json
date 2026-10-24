@@ -1,12 +1,14 @@
 {
   "name": "phanes-net",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:publication": "node tests/run-publication.mjs",
+    "prebuild": "node scripts/generate-blog-metadata.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

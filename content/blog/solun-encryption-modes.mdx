@@ -1,0 +1,37 @@
+---
+title: "Solun: Encrypted at Rest and End-to-End Encryption Are Different Promises"
+date: "2026-11-19"
+description: "Follow the key and plaintext through Solun Quick and Secure modes, including the limits of link sharing and burn after read."
+---
+
+Solun offers two sharing modes with different trust boundaries. Calling both of them simply “encrypted” hides the decision a sender actually needs to make: which systems can recover the plaintext?
+
+This explanation follows the text-sharing paths reviewed in October 2026. Check the current application and documentation before relying on a specific deployment. It is not a third-party security audit.
+
+## Quick mode keeps a server-side decryption path
+
+In Quick mode, the API receives the text and encrypts it for storage using a server-side key. When serving the paste, the server can decrypt it. This protects the stored representation in a different way from a design where the server never receives the plaintext or decryption key.
+
+That distinction matters when choosing a mode. A useful question is whether the server is allowed to process the readable text. If the answer is no, “encrypted at rest” is not the whole requirement, regardless of the algorithm's name.
+
+The reviewed Quick path enforces burn after read. That controls the service's later availability of the stored item. It cannot prevent a recipient from copying the delivered text.
+
+## Secure mode moves encryption into the browser
+
+The Secure path encrypts before uploading. The decryption key is carried in the link's fragment rather than in the normal HTTP request target. On receipt, the application uses the browser-side key to recover the text.
+
+A fragment is not automatically part of the request sent to the web server. It is nevertheless available to the browser environment, and a person who receives the complete link receives its key. Copying that link into a chat or another application deliberately creates another place where it may be visible.
+
+This is why “never sent as part of the HTTP request” is more precise than saying that a key can never leave a device. Endpoint security, extensions, screenshots and the channel used to share a link remain relevant.
+
+## Deletion and confidentiality answer different questions
+
+Expiry and burn after read limit retrieval through the service. They do not provide control over a copy already made by a reader. A successful decryption shows that the recipient obtained readable data, not that the recipient's environment will keep it private.
+
+For a harmless demonstration, share invented text, observe the selected mode and test retrieval according to the displayed options. Do not use a real credential as the demonstration payload. Verify what the current service does rather than assuming that every deployment has identical settings.
+
+## Choose by the boundary you need
+
+Use the mode description as a decision aid: does the server process plaintext, who holds the key, and what does the recipient receive? Then consider expiry separately. Those questions are more useful than a broad promise that one tool makes every sharing scenario secure.
+
+Sources: [Solun source and documentation](https://github.com/solun-pm/solun), [URL fragments in the web platform](https://developer.mozilla.org/en-US/docs/Web/API/URL/hash).
