@@ -5,6 +5,7 @@ interface ProjectLink {
 }
 
 interface ProjectCardProps {
+  slug: string;
   name: string;
   subtitle?: string;
   description: string;
@@ -13,6 +14,7 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({
+  slug,
   name,
   subtitle,
   description,
@@ -85,8 +87,10 @@ export default function ProjectCard({
             )}
             <a
               href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
+              target={link.href.startsWith("/") ? undefined : "_blank"}
+              rel={link.href.startsWith("/") ? undefined : "noopener noreferrer"}
+              data-rybbit-event={link.href.startsWith("https://github.com/") ? "repository_link_clicked" : "project_link_clicked"}
+              data-rybbit-prop-project={slug}
               style={{
                 color: "#7c3aed",
                 fontSize: "0.75rem",

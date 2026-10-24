@@ -47,6 +47,8 @@ export default async function ProjectsPage() {
                           )}
                           <a
                             href={link.href}
+                            data-rybbit-event={link.href.startsWith("https://github.com/") ? "repository_link_clicked" : "project_link_clicked"}
+                            data-rybbit-prop-project={project.slug}
                             target={link.href.startsWith("/") ? undefined : "_blank"}
                             rel={link.href.startsWith("/") ? undefined : "noopener noreferrer"}
                             className="proj-link"
