@@ -4,12 +4,14 @@ import ProjectCard from "@/components/ProjectCard";
 import ContactLinks from "@/components/ContactLinks";
 import Link from "next/link";
 import { getSortedProjects } from "@/lib/github";
+import { getAllPosts } from "@/lib/blog";
 
 export const revalidate = 21600;
 export const metadata: Metadata = { alternates: {canonical:'https://phanes.net/'} };
 
 export default async function Home() {
   const featured = (await getSortedProjects()).slice(0, 3);
+  const commitgenNote = (await getAllPosts()).find(post => post.slug === "why-i-built-commitgen");
   return (
     <>
       <div className="page-shell">
@@ -37,6 +39,7 @@ export default async function Home() {
                   → all projects
                 </Link>
                 <Link href="/blog" className="see-more">→ engineering notes</Link>
+                {commitgenNote && <Link href={`/blog/${commitgenNote.slug}`} className="see-more">→ {commitgenNote.title}</Link>}
               </div>
 
               <div className="divider" />
@@ -145,7 +148,7 @@ export default async function Home() {
           color: #c4b5fd !important;
         }
         .see-more {
-          color: #334155 !important;
+          color: #a78bfa !important;
           font-size: 0.75rem;
           font-family: var(--font-mono);
           letter-spacing: 0.05em;
@@ -216,7 +219,7 @@ export default async function Home() {
         }
         .footer-dot { color: #1e293b; font-size: 0.72rem; }
         .footer-link {
-          color: #334155 !important;
+          color: #a78bfa !important;
           font-size: 0.72rem;
           letter-spacing: 0.05em;
           font-family: var(--font-mono);
