@@ -65,11 +65,12 @@ export default function Impressum() {
               marginBottom: "0.5rem",
             }}
           >
-            Information pursuant to § 5 TMG
+            Information pursuant to § 5 DDG
           </h2>
           <p>Jannik Schröder</p>
+          <p>VAT ID / USt-IdNr.: DE466225341</p>
           <p style={{ color: "#64748b", fontStyle: "italic" }}>
-            [Address available on request]
+            Talleweg 10, 33104 Paderborn, Germany
           </p>
         </section>
 
